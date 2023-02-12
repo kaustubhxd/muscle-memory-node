@@ -12,7 +12,8 @@
     "@fastify/formbody": "^7.4.0",
     "@fastify/static": "^6.6.0",
     "@fastify/view": "^7.3.0",
-    "knex": "^2.4.2"
+    "knex": "^2.4.2",
+    "mysql2": "^3.1.2"
   },
   "engines": {
     "node": "14.x"

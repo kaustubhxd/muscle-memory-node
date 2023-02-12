@@ -4,14 +4,33 @@
  */
 
 const path = require("path");
+const knex = require("knex");
+
+
+const knexInstance = knex({
+  client: 'mysql2',
+  connection: {
+    host: process.env.MYSQL_URL,
+    user: process.env.MYSQL_USERNAME,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DB,
+    dateStrings: true,
+    supportBigNumbers: true
+    // bigNumberStrings: true
+  },
+  pool: { min: 0, max: 7 },
+  acquireConnectionTimeout: 10000,
+  debug: true,
+  asyncStackTraces: true,
+  // postProcessResponse: (result, queryContext) => convertToCamel(result)
+});
+
 
 // Require the fastify framework and instantiate it
 const fastify = require("fastify")({
   // Set this to true for detailed logging:
   logger: false,
 });
-
-// ADD FAVORITES ARRAY VARIABLE FROM TODO HERE
 
 // Setup our static files
 fastify.register(require("@fastify/static"), {
@@ -22,19 +41,13 @@ fastify.register(require("@fastify/static"), {
 // Formbody lets us parse incoming forms
 fastify.register(require("@fastify/formbody"));
 
-// Load and parse SEO data
-const seo = require("./src/seo.json");
-if (seo.url === "glitch-default") {
-  seo.url = `https://${process.env.PROJECT_DOMAIN}.glitch.me`;
-}
-
 /**
  * Our home page route
  *
  * Returns src/pages/index.hbs with data built into it
  */
 fastify.get("/", function (request, reply) {
-  
+  console.log(knexInstance)
 
   return {a: Object.keys(request)}
 });
