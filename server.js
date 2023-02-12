@@ -49,7 +49,7 @@ fastify.register(require("@fastify/formbody"));
  */
 fastify.get("/", async (request, reply) => {
   console.log(knexPgInstance)
-  const resp = await knexPgInstance('xxtgblbl').limit(10)
+  const resp = await knexPgInstance.raw('SELECT * FROM information_schema.tables')
 
   return {a: resp}
 });
