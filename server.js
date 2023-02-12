@@ -7,22 +7,23 @@ const path = require("path");
 const knex = require("knex");
 
 
-const knexInstance = knex({
-  client: 'mysql2',
+const knexPgInstance = knex({
+  client: 'pg',
   connection: {
-    host: process.env.MYSQL_URL,
-    user: process.env.MYSQL_USERNAME,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DB,
+    host: `${process.env.POSTGRES_HOST}`,
+    database: `${process.env.POSTGRES_DB}`,
+    user: `${process.env.POSTGRES_USER}`,
+    password: `${process.env.POSTGRES_PASSWORD}`,
     dateStrings: true,
     supportBigNumbers: true
-    // bigNumberStrings: true
   },
-  pool: { min: 0, max: 7 },
+  // typeCast:formatTimestamp,
+  searchPath: 'public',
+  pool: { min: 0, max: 20 },
   acquireConnectionTimeout: 10000,
   debug: true,
   asyncStackTraces: true,
-  // postProcessResponse: (result, queryContext) => convertToCamel(result)
+  // postProcessResponse: (result, queryContext) => convertToCamel(result),
 });
 
 
@@ -46,10 +47,11 @@ fastify.register(require("@fastify/formbody"));
  *
  * Returns src/pages/index.hbs with data built into it
  */
-fastify.get("/", function (request, reply) {
-  console.log(knexInstance)
+fastify.get("/", async (request, reply) => {
+  console.log(knexPgInstance)
+  const resp = await knexPgInstance('xxtgblbl').limit(10)
 
-  return {a: Object.keys(request)}
+  return {a: resp}
 });
 
 /**

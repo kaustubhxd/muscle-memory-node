@@ -13,7 +13,8 @@
     "@fastify/static": "^6.6.0",
     "@fastify/view": "^7.3.0",
     "knex": "^2.4.2",
-    "mysql2": "^3.1.2"
+    "mysql2": "^3.1.2",
+    "pg": "^8.9.0"
   },
   "engines": {
     "node": "14.x"
