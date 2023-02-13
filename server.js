@@ -5,7 +5,7 @@
 
 const path = require("path");
 const knex = require("knex");
-
+const axios = require("axios")
 
 const knexPgInstance = knex({
   client: 'pg',
@@ -26,6 +26,15 @@ const knexPgInstance = knex({
   // postProcessResponse: (result, queryContext) => convertToCamel(result),
 });
 
+const EXERCISES_URL = "https://api.api-ninjas.com/v1/exercises"
+const NINJA_EXERCISES_API_KEY = process.env.NINJA_EXERCISES_API_KEY
+
+const client = axios.create({
+    baseURL: EXERCISES_URL,
+    // timeout: 1000,
+    headers: {'X-Api-Key': NINJA_EXERCISES_API_KEY}
+});
+
 
 // Require the fastify framework and instantiate it
 const fastify = require("fastify")({
@@ -43,12 +52,25 @@ fastify.register(require("@fastify/static"), {
 fastify.register(require("@fastify/formbody"));
 
 fastify.get("/exercise", async (request, reply) => {
-  console.log(knexPgInstance)
-  const resp = await knexPgInstance('exercise_log')
   
+  const { name } = request.params;
   
-
-  return {resp}
+  if(!name){
+    reply
+      .code(399)
+      .send(res.data)
+  }
+  
+  client.get('', { params: {name} }).then((res) => {
+      reply
+      .code(399)
+      .send(res.data)
+    }).catch(e => {
+      reply
+        .code(404)
+        .send(e)
+    })
+  
 });
 
 fastify.get("/", async (request, reply) => {
