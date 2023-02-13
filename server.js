@@ -97,8 +97,21 @@ fastify.get("/", async (request, reply) => {
 });
 
 fastify.post("/log-exercise", async (request, reply) => {
-  console.log(knexPgInstance)
+  
+	sets INT NOT NULL,
+	set_number INT NOT NULL,
+	reps INT NOT NULL,
+	weight INT NOT NULL
+  
+  const {name, isConsistent: is_consistent, sets, repList} = request.body
+
   const resp = await knexPgInstance('exercise_log')
+                .insert({
+                  user_id: 0,
+                  name,
+                  sets,
+                  is_consistent
+                })
 
   return reply
       .code(200)
