@@ -42,6 +42,20 @@ const fastify = require("fastify")({
   logger: false,
 });
 
+fastify.register(require('@fastify/cors'), { 
+  origin: (origin, cb) => {
+  const hostname = new URL(origin).hostname
+  console.log(hostname, 'hostname')
+  if(true){
+    //  Request from localhost will pass
+    cb(null, true)
+    return 
+  }
+  // Generate an error on other origins, disabling access
+  cb(new Error("Not allowed"), false)
+}
+})
+
 // Setup our static files
 fastify.register(require("@fastify/static"), {
   root: path.join(__dirname, "public"),
@@ -62,22 +76,16 @@ fastify.get("/exercise", async (request, reply) => {
   }
   
   try{
-    const response = client.get('', { params: {name} })
-    
+    const response = await client.get('', { params: {name} })
+    return reply
+      .code(200)
+      .send(response.data)
   }catch(e) {
       reply
         .code(404)
         .send(e)
   }
-
-      return reply
-      .code(200)
-      .send({res: 3434})
     
-    console.log('got stuff')
-    }).catch(e => {
-
-  
 });
 
 fastify.get("/", async (request, reply) => {
