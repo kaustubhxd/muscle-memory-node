@@ -6,6 +6,7 @@
 const path = require("path");
 const knex = require("knex");
 const axios = require("axios")
+const { v4 : uuidv4 } = require("uuid")
 
 const knexPgInstance = knex({
   client: 'pg',
@@ -102,12 +103,15 @@ fastify.post("/log-exercise", async (request, reply) => {
   
   const {name, isConsistent: is_consistent, sets, repList} = request.body
   
+  const set_id = uuidv4()
+  
   await Promise.all(
     repList.map(async ({reps, weight}, index) => {
       await knexPgInstance('exercise_log')
               .insert({
                 user_id: 0,
                 name,
+                set_id,
                 sets,
                 is_consistent,
                 set_number: index + 1,
@@ -125,15 +129,13 @@ fastify.post("/log-exercise", async (request, reply) => {
 
 fastify.get("/exercise-log", async (request, reply) => {
   
-  const response = await knexPgInstance('exercise_log')
+  const response = await knexPgInstance('exercise_log').groupBy('')
   
   return reply
     .code(200)
     .send(response)
 
 });
-
-
 
 
 /**
