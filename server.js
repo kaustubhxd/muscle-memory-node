@@ -129,7 +129,7 @@ fastify.get("/exercise-log", async (request, reply) => {
   
   return reply
     .code(200)
-    .send({response})
+    .send(response)
 
 });
 
