@@ -1,7 +1,7 @@
--- CREATE exercise_log table
 CREATE TABLE exercise_log (
 	id serial PRIMARY KEY,
   user_id INT NOT NULL,
+  set_id VARCHAR(100) NOT NULL,
 	name VARCHAR ( 70 ) NOT NULL,
 	sets INT NOT NULL,
 	set_number INT NOT NULL,

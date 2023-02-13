@@ -129,7 +129,9 @@ fastify.post("/log-exercise", async (request, reply) => {
 
 fastify.get("/exercise-log", async (request, reply) => {
   
-  const response = await knexPgInstance('exercise_log').groupBy('')
+  const response = await knexPgInstance('exercise_log')
+                    .select('id','name', 'set_id')
+                    .groupBy('set_id', 'id')
   
   return reply
     .code(200)
