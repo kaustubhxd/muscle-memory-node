@@ -42,11 +42,15 @@ const fastify = require("fastify")({
   logger: false,
 });
 
+const cors_allow = [
+  'kaustubhxd.github.io/muscle-memory/',
+  'localhost'
+]
+
 fastify.register(require('@fastify/cors'), { 
   origin: (origin, cb) => {
   const hostname = new URL(origin).hostname
-  console.log(hostname, 'hostname')
-  if(true){
+  if(cors_allow.includes(hostname)){
     //  Request from localhost will pass
     cb(null, true)
     return 
@@ -81,7 +85,7 @@ fastify.get("/exercise", async (request, reply) => {
       .code(200)
       .send(response.data)
   }catch(e) {
-      reply
+      return reply
         .code(404)
         .send(e)
   }
@@ -89,17 +93,16 @@ fastify.get("/exercise", async (request, reply) => {
 });
 
 fastify.get("/", async (request, reply) => {
-  console.log(knexPgInstance)
-  const resp = await knexPgInstance('exercise_log')
-
-  return {resp}
+  return 
 });
 
 fastify.post("/log-exercise", async (request, reply) => {
   console.log(knexPgInstance)
   const resp = await knexPgInstance('exercise_log')
 
-  return {resp}
+  return reply
+      .code(200)
+      .send({message: 'Server online'})
 });
 
 
