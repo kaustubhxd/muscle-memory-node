@@ -53,23 +53,30 @@ fastify.register(require("@fastify/formbody"));
 
 fastify.get("/exercise", async (request, reply) => {
   
-  const { name } = request.params;
-  
+  const { name } = request.query;
+    
   if(!name){
     reply
-      .code(399)
-      .send(res.data)
+      .code(500)
+      .send({message: 'Parameter not passed'})
   }
   
-  client.get('', { params: {name} }).then((res) => {
-      reply
-      .code(399)
-      .send(res.data)
-    }).catch(e => {
+  try{
+    const response = client.get('', { params: {name} })
+    
+  }catch(e) {
       reply
         .code(404)
         .send(e)
-    })
+  }
+
+      return reply
+      .code(200)
+      .send({res: 3434})
+    
+    console.log('got stuff')
+    }).catch(e => {
+
   
 });
 
