@@ -93,29 +93,35 @@ fastify.get("/exercise", async (request, reply) => {
 });
 
 fastify.get("/", async (request, reply) => {
-  return 
-});
+  return reply
+      .code(200)
+      .send({message: 'Server online'})}
+);
 
 fastify.post("/log-exercise", async (request, reply) => {
   
-	sets INT NOT NULL,
-	set_number INT NOT NULL,
-	reps INT NOT NULL,
-	weight INT NOT NULL
-  
   const {name, isConsistent: is_consistent, sets, repList} = request.body
-
-  const resp = await knexPgInstance('exercise_log')
-                .insert({
-                  user_id: 0,
-                  name,
-                  sets,
-                  is_consistent
-                })
-
+  
+  await Promise.all(
+    repList.map(async ({reps, weight}, index) => {
+      await knexPgInstance('exercise_log')
+              .insert({
+                user_id: 0,
+                name,
+                sets,
+                is_consistent,
+                set_number: index + 1,
+                reps,
+                weight
+              })
+    })
+  );
+  
   return reply
-      .code(200)
-      .send({message: 'Server online'})
+    .code(200)
+    .send({message: 'Exercise logged'})
+
+
 });
 
 
