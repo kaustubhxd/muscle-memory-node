@@ -121,8 +121,18 @@ fastify.post("/log-exercise", async (request, reply) => {
     .code(200)
     .send({message: 'Exercise logged'})
 
+});
+
+fastify.get("/exercise-log", async (request, reply) => {
+  
+  const response = await knexPgInstance('exercise_log')
+  
+  return reply
+    .code(200)
+    .send({response})
 
 });
+
 
 
 

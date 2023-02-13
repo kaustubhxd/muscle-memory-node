@@ -6,8 +6,8 @@ CREATE TABLE exercise_log (
 	sets INT NOT NULL,
 	set_number INT NOT NULL,
 	reps INT NOT NULL,
-	weight INT NOT NULL,
+	weight DECIMAL NOT NULL,
 	is_consistent BOOLEAN NOT NULL,         
-	created_on TIMESTAMP NOT NULL,
-  updated_on TIMESTAMP NOT NULL
+	created_on TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_on TIMESTAMP NOT NULL DEFAULT NOW()
 );
