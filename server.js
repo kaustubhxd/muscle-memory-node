@@ -103,7 +103,7 @@ fastify.post("/log-exercise", async (request, reply) => {
   
   const {name, isConsistent: is_consistent, sets, repList} = request.body
   
-  const set_id = uuidv4()
+  const exercise_id = uuidv4()
   
   await Promise.all(
     repList.map(async ({reps, weight}, index) => {
@@ -111,7 +111,7 @@ fastify.post("/log-exercise", async (request, reply) => {
               .insert({
                 user_id: 0,
                 name,
-                set_id,
+                exercise_id,
                 sets,
                 is_consistent,
                 set_number: index + 1,
@@ -129,7 +129,31 @@ fastify.post("/log-exercise", async (request, reply) => {
 
 fastify.get("/exercise-log", async (request, reply) => {
   
-  const response = await knexPgInstance('exercise_log')
+  //   SELECT exercise_id, 
+  // array_to_string(array_agg(reps), ',') as reps, 
+  // array_to_string(array_agg(weight), ',') as weight,
+  // min(name) as name,
+  // min(user_id) as user_id,
+  // min(created_on) as created_on,
+  // min(updated_on) as updated_on,
+  // min(sets) as sets,
+  // bool_or(is_consistent) as is_consistent
+  // FROM exercise_log
+  // GROUP BY exercise_id;
+
+  const response = await 
+    knexPgInstance('exercise_log')
+    .select('exercise_id', 
+            knexPgInstance.raw("array_to_string(array_agg(reps), ',') as reps"),
+            knexPgInstance.raw("array_to_string(array_agg(weight), ',') as weight"),
+            knexPgInstance.raw("min(name) as name"),
+            knexPgInstance.raw("min(user_id) as user_id"),
+            knexPgInstance.raw("min(created_on) as created_on"),
+            knexPgInstance.raw("min(updated_on) as updated_on"),
+            knexPgInstance.raw("min(sets) as sets"),
+            knexPgInstance.raw("bool_or(is_consistent) as is_consistent"))
+    .groupBy('exercise_id')
+            
   
   return reply
     .code(200)
