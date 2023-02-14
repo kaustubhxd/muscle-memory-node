@@ -156,9 +156,8 @@ fastify.get("/exercise-log", async (request, reply) => {
             knexPgInstance.raw("min(sets) as sets"),
             knexPgInstance.raw("bool_or(is_consistent) as is_consistent"))
     .groupBy('exercise_id')
-    .where('created_on',date)
-            
-  
+    .where(knexPgInstance.raw(`created_on::date = date '${date}'`))
+
   return reply
     .code(200)
     .send(response)
