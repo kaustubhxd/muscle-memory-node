@@ -129,6 +129,9 @@ fastify.post("/log-exercise", async (request, reply) => {
 
 fastify.get("/exercise-log", async (request, reply) => {
   
+  const {date} = request.query
+  console.log(date, 'query')
+  
   //   SELECT exercise_id, 
   // array_to_string(array_agg(reps), ',') as reps, 
   // array_to_string(array_agg(weight), ',') as weight,
@@ -153,6 +156,7 @@ fastify.get("/exercise-log", async (request, reply) => {
             knexPgInstance.raw("min(sets) as sets"),
             knexPgInstance.raw("bool_or(is_consistent) as is_consistent"))
     .groupBy('exercise_id')
+    .where('created_on',date)
             
   
   return reply
