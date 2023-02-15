@@ -1,12 +1,8 @@
-/**
- * This is the main Node.js server script for your project
- * Check out the two endpoints this back-end API provides in fastify.get and fastify.post below
- */
-
 const path = require("path");
 const knex = require("knex");
 const axios = require("axios")
 const { v4 : uuidv4 } = require("uuid")
+require('dotenv').config();
 
 const knexPgInstance = knex({
   client: 'pg',
