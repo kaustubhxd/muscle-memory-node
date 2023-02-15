@@ -147,6 +147,7 @@ fastify.get("/exercise-log", async (request, reply) => {
   const response = await 
     knexPgInstance('exercise_log')
     .select('exercise_id', 
+            knexPgInstance.raw("array_to_string(array_agg(id), ',') as id"),
             knexPgInstance.raw("array_to_string(array_agg(reps), ',') as reps"),
             knexPgInstance.raw("array_to_string(array_agg(weight), ',') as weight"),
             knexPgInstance.raw("min(name) as name"),
