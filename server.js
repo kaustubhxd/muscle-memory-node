@@ -4,6 +4,8 @@ const axios = require("axios")
 const { v4 : uuidv4 } = require("uuid")
 require('dotenv').config();
 
+console.log('updates')
+
 const knexPgInstance = knex({
   client: 'pg',
   connection: {
