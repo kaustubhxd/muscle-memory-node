@@ -64,6 +64,7 @@ const getExerciseLog = expressAsyncHandler(async (req, res) => {
         knexPgInstance.raw('bool_or(is_consistent) as is_consistent'))
       .groupBy('exercise_id')
       .where(knexPgInstance.raw(`created_on::date = date '${date}'`))
+      .orderBy('created_on', 'desc')
 
     res.status(200).json(response)
   } catch (e) {
