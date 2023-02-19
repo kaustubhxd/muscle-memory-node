@@ -5,7 +5,7 @@ import cors from 'cors'
 
 const app = express()
 
-const corsWhitelist = ['http://localhost:3000', 'kaustubhxd.github.io/muscle-memory']
+const corsWhitelist = ['http://localhost:3000', 'kaustubhxd.github.io/muscle-memory', undefined]
 const corsOptions = {
   origin: (origin, callback) => {
     if (corsWhitelist.indexOf(origin) !== -1) {
