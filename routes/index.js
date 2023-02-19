@@ -5,7 +5,7 @@ const router = express.Router()
 
 // Check if server is online
 router.get(
-  '/',
+  '/v1',
   expressAsyncHandler(async (req, res) => {
     res.status(200).json({ message: 'Server online' })
   })

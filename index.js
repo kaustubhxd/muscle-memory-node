@@ -5,11 +5,11 @@ import cors from 'cors'
 
 const app = express()
 
-const corsWhitelist = ['http://localhost:3000', 
-                       'kaustubhxd.github.io/muscle-memory', 
-                       'kaustubhxd.github.io', 
-                       'https://kaustubhxd.github.io',
-                       undefined]
+const corsWhitelist = ['http://localhost:3000',
+  'kaustubhxd.github.io/muscle-memory',
+  'kaustubhxd.github.io',
+  'https://kaustubhxd.github.io',
+  undefined]
 const corsOptions = {
   origin: (origin, callback) => {
     console.log(corsWhitelist, origin)
