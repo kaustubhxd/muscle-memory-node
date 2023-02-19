@@ -1,21 +1,32 @@
-const knex = require('knex')
+import knex from 'knex'
+import pg from 'pg'
+import { knexSnakeCaseMappers } from 'objection'
 
-const knexInstance = knex({
-  client: 'mysql2',
+// https://stackoverflow.com/a/51085796 (knex-silently-converts-postgres-timestamps-with-timezone-and-returns-incorrect-t)
+const { types } = pg
+const TIMESTAMPTZ_OID = 1184
+const TIMESTAMP_OID = 1114
+types.setTypeParser(TIMESTAMPTZ_OID, val => val)
+types.setTypeParser(TIMESTAMP_OID, val => val)
+
+const knexPgInstance = knex({
+  client: 'pg',
   connection: {
-    host: process.env.MYSQL_URL,
-    user: process.env.MYSQL_USERNAME,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DB,
+    host: `${process.env.POSTGRES_HOST}`,
+    database: `${process.env.POSTGRES_DB}`,
+    user: `${process.env.POSTGRES_USER}`,
+    password: `${process.env.POSTGRES_PASSWORD}`,
     dateStrings: true,
     supportBigNumbers: true
-    // bigNumberStrings: true
   },
-  pool: { min: 0, max: 7 },
-  acquireConnectionTimeout: 10000,
+  // typeCast:formatTimestamp,
+  searchPath: 'public',
+  pool: { min: 0, max: 20 },
+  // acquireConnectionTimeout: 10000,
   debug: true,
   asyncStackTraces: true,
-  // postProcessResponse: (result, queryContext) => convertToCamel(result)
-});
+  // postProcessResponse: (result, queryContext) => convertToCamel(result),
+  ...knexSnakeCaseMappers()
+})
 
-export default knexInstance;
+export default knexPgInstance

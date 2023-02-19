@@ -1,8 +1,8 @@
 -- CREATE TABLE exercise_log
 CREATE TABLE exercise_log (
 	id serial PRIMARY KEY,
-  user_id INT NOT NULL,
-  exercise_id VARCHAR(100) NOT NULL,
+  	user_id INT NOT NULL,
+  	exercise_id VARCHAR(100) NOT NULL,
 	name VARCHAR ( 70 ) NOT NULL,
 	sets INT NOT NULL,
 	set_number INT NOT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE exercise_log (
 	weight DECIMAL NOT NULL,
 	is_consistent BOOLEAN NOT NULL,         
 	created_on TIMESTAMP NOT NULL DEFAULT NOW(),
-  updated_on TIMESTAMP NOT NULL DEFAULT NOW()
+  	updated_on TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 -- Merge rows with same exercise_id and return all columns
