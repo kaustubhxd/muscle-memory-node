@@ -4,10 +4,6 @@ import exerciseClient from '../config/exerciseClient.js'
 import { v4 as uuidv4 } from 'uuid'
 import knexPgInstance from '../config/knexInstance.js'
 
-const getServerStatus = expressAsyncHandler(async (req, res) => {
-  res.status(200).json({ message: 'Exercise server online' })
-})
-
 const getExercise = expressAsyncHandler(async (req, res) => {
   const { search } = req.query
 
@@ -46,7 +42,7 @@ const postLogExercise = expressAsyncHandler(async (req, res) => {
     res.status(200).json({ message: 'Exercise logged' })
   } catch (e) {
     trx.rollback()
-    res.status(500).json({ message: e })
+    res.status(500).json({ message: 'Error logging exercise', error: e })
   }
 })
 
@@ -76,7 +72,6 @@ const getExerciseLog = expressAsyncHandler(async (req, res) => {
 })
 
 export {
-  getServerStatus,
   getExercise,
   postLogExercise,
   getExerciseLog

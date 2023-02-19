@@ -1,13 +1,17 @@
 import express from 'express'
-import { getServerStatus } from '../controllers/_exerciseController.js'
+import expressAsyncHandler from 'express-async-handler'
 import exerciseRoute from './v1/exerciseRoute.js'
 const router = express.Router()
 
-router.use('/v1/exercise', exerciseRoute)
-
+// Check if server is online
 router.get(
   '/',
-  getServerStatus
+  expressAsyncHandler(async (req, res) => {
+    res.status(200).json({ message: 'Server online' })
+  })
 )
+
+// Routes
+router.use('/v1/exercise', exerciseRoute)
 
 export default router
