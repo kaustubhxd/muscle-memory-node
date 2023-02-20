@@ -1,7 +1,6 @@
 
 import expressAsyncHandler from 'express-async-handler'
 import exerciseClient from '../config/exerciseClient.js'
-import { v4 as uuidv4 } from 'uuid'
 import knexPgInstance from '../config/knexInstance.js'
 
 const getExercise = expressAsyncHandler(async (req, res) => {
@@ -21,22 +20,24 @@ const postLogExercise = expressAsyncHandler(async (req, res) => {
   const trx = await knexPgInstance.transaction()
 
   try {
-    const exerciseId = uuidv4()
-    await Promise.all(
-      repList.map(async ({ reps, weight }, index) => {
-        await trx('exercise_log')
-          .insert({
-            user_id: 0,
-            name,
-            exercise_id: exerciseId,
-            sets,
-            is_consistent: isConsistent,
-            set_number: index + 1,
-            reps,
-            weight
-          })
+    if (!isConsistent && (repList.length !== sets)) {
+      res.status(500).json({ message: 'Sets are declared variant but reps & weights do not match the number of sets.' })
+    }
+
+    const reps = repList.map(({ reps }) => reps).join()
+    const weight = repList.map(({ weight }) => weight).join()
+
+    console.log({ reps, weight })
+
+    await trx('exercise_log')
+      .insert({
+        user_id: 0,
+        name,
+        sets,
+        is_consistent: isConsistent,
+        reps,
+        weight
       })
-    )
     trx.commit()
 
     res.status(200).json({ message: 'Exercise logged' })
@@ -49,22 +50,35 @@ const postLogExercise = expressAsyncHandler(async (req, res) => {
 const getExerciseLog = expressAsyncHandler(async (req, res) => {
   const { date } = req.query
 
+  const userId = 0
+
   try {
     const response = await
     knexPgInstance('exercise_log')
-      .select('exercise_id',
-        knexPgInstance.raw("array_to_string(array_agg(id), ',') as id"),
-        knexPgInstance.raw("array_to_string(array_agg(reps), ',') as reps"),
-        knexPgInstance.raw("array_to_string(array_agg(weight), ',') as weight"),
-        knexPgInstance.raw('min(name) as name'),
-        knexPgInstance.raw('min(user_id) as user_id'),
-        knexPgInstance.raw('min(created_on) as created_on'),
-        knexPgInstance.raw('min(updated_on) as updated_on'),
-        knexPgInstance.raw('min(sets) as sets'),
-        knexPgInstance.raw('bool_or(is_consistent) as is_consistent'))
-      .groupBy('exercise_id')
+      .select('id',
+        'name',
+        'sets',
+        'is_consistent',
+        'reps',
+        'weight',
+        'created_on')
+      .where('user_id', userId)
       .where(knexPgInstance.raw(`created_on::date = date '${date}'`))
       .orderBy('created_on', 'desc')
+
+    res.status(200).json(response)
+  } catch (e) {
+    res.status(500).json({ message: e })
+  }
+})
+
+const deleteExerciseLog = expressAsyncHandler(async (req, res) => {
+  const { id } = req.query
+
+  try {
+    const response = await
+    knexPgInstance('exercise_log')
+      .where('id', id).del()
 
     res.status(200).json(response)
   } catch (e) {
@@ -75,5 +89,6 @@ const getExerciseLog = expressAsyncHandler(async (req, res) => {
 export {
   getExercise,
   postLogExercise,
-  getExerciseLog
+  getExerciseLog,
+  deleteExerciseLog
 }
